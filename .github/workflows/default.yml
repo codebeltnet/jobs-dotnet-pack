@@ -71,7 +71,7 @@ jobs:
           level: ${{ inputs.verbosity-level }}
           uploadPackedArtifact: ${{ inputs.upload-packed-artifact }}
           uploadPackedArtifactName: ${{ inputs.upload-packed-artifact-name }}
-          version: ${{ needs.build.outputs.version }}
+          version: ${{ inputs.version }}
           projects: ${{ inputs.projects }}
           restoreCacheKey: ${{ inputs.restore-cache-key }}
           downloadBuildArtifactPattern: ${{ inputs.download-build-artifact-pattern }}
