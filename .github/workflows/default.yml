@@ -94,8 +94,9 @@ jobs:
       - name: Pack for ${{ inputs.configuration }}
         uses: codebeltnet/dotnet-pack@v3
         with:
-          projects: ${{ inputs.projects }}
+          configuration: ${{ inputs.configuration }}
           verbosity-level: ${{ inputs.verbosity-level }}
+          projects: ${{ inputs.projects }}
           
 
       - name: Upload NuGet Artifacts
