@@ -32,11 +32,6 @@ on:
         required: false
         type: string
         default: ''
-      upload-packed-artifact:
-        description: Upload the created NuGet packages. Default is to not upload.
-        required: false
-        type: boolean
-        default: false
       upload-packed-artifact-name:
         description: The name of the NuGet package to upload. Default, when left empty, is 'format('NuGet-{0}', inputs.configuration)'.
         required: false
@@ -64,14 +59,42 @@ jobs:
         with:
           includePreview: ${{ inputs.include-preview }}
 
-      - name: Pack for ${{ inputs.configuration }}
-        uses: codebeltnet/dotnet-pack@v2
+      - if: inputs.restore-cache-key != ''
+        name: Restore Cache
+        uses: actions/cache/restore@v4
         with:
-          configuration: ${{ inputs.configuration }}
-          level: ${{ inputs.verbosity-level }}
-          uploadPackedArtifact: ${{ inputs.upload-packed-artifact }}
-          uploadPackedArtifactName: ${{ inputs.upload-packed-artifact-name }}
-          version: ${{ inputs.version }}
+          path: |
+            ${{ github.workspace }}
+            !${{ github.workspace }}/.git
+            ~/.nuget/packages
+          key: ${{ inputs.restore-cache-key }}
+          restore-keys: |
+            dotnet-restore-
+          enableCrossOsArchive: true
+          fail-on-cache-miss: true
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ${{ inputs.download-build-artifact-pattern != '' && inputs.download-build-artifact-pattern || format('*-{0}', inputs.configuration) }}
+          merge-multiple: true
+
+      - name: Set Version
+        run: |
+          echo "MINVERVERSIONOVERRIDE=${{ inputs.version }}" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Pack for ${{ inputs.configuration }}
+        uses: codebeltnet/dotnet-pack@v3
+        with:
           projects: ${{ inputs.projects }}
-          restoreCacheKey: ${{ inputs.restore-cache-key }}
-          downloadBuildArtifactPattern: ${{ inputs.download-build-artifact-pattern }}
+          verbosity-level: ${{ inputs.verbosity-level }}
+          
+
+      - name: Upload NuGet Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.upload-packed-artifact-name != '' && inputs.upload-packed-artifact-name || format('NuGet-{0}', inputs.configuration) }}
+          path: ${{ runner.temp }}/.nuget
+          if-no-files-found: error
+          include-hidden-files: true

@@ -17,7 +17,11 @@ This repository contains reusable workflows for interacting with .NET CLI `pack`
 
 - [default.yml](.github/workflows/default.yml) - the `dotnet pack` workflow that:
   - [installs the .NET SDK](https://github.com/codebeltnet/install-dotnet),
-  - [packages previously built projects into NuGet packages](https://github.com/codebeltnet/dotnet-pack).
+  - conditionally restores cached content,
+  - downloads build artifacts,
+  - sets the version of the NuGet package,
+  - [packages previously built projects into NuGet packages](https://github.com/codebeltnet/dotnet-pack),
+  - uploads the generated NuGet package as a workflow artifact.
 
 ### Usage
 
@@ -25,7 +29,7 @@ To call this workflow in your GitHub repository, you can follow these steps:
 
 ```yaml
 pack-call:
-    uses: codebeltnet/jobs-dotnet-pack/.github/workflows/default.yml@v1
+    uses: codebeltnet/jobs-dotnet-pack/.github/workflows/default.yml@v2
 ```
 
 #### Inputs
@@ -44,8 +48,6 @@ with:
   verbosity-level: 'quiet'
   # The pattern to download the build artifacts. Default, when left empty, is 'format('*-{0}', inputs.configuration)'.
   download-build-artifact-pattern: ''
-  # Upload the generated build artifact. Default is to upload.
-  upload-packed-artifact: false
   # The name of the NuGet package to upload. Default, when left empty, is 'format('NuGet-{0}', inputs.configuration)'.
   upload-packed-artifact-name: ''
   # When set, the current workspace will be overwritten with the content of the restore cache. Default is an empty string.
@@ -67,12 +69,34 @@ This workflow has no outputs.
 ```yaml
 jobs:
   build:
-    uses: codebeltnet/jobs-dotnet-pack/.github/workflows/default@v1
+    uses: codebeltnet/jobs-dotnet-pack/.github/workflows/default@v2
     with:
       configuration: Release
-      uploadPackedArtifact: true
       version: 1.0.0
 ```
+
+## Caller workflows to showcase the Codebelt experience
+
+### Basic CI/CD Pipeline
+
+- Bootstrapper API - https://github.com/codebeltnet/bootstrapper/blob/main/.github/workflows/pipelines.yml
+- Extensions for Asp.Versioning API - https://github.com/codebeltnet/asp-versioning/blob/main/.github/workflows/pipelines.yml
+- Extensions for AWS Signature Version 4 API - https://github.com/codebeltnet/aws-signature-v4/blob/main/.github/workflows/pipelines.yml
+- Extensions for Globalization API - https://github.com/codebeltnet/globalization/blob/main/.github/workflows/pipelines.yml
+- Extensions for Newtonsoft.Json API - https://github.com/codebeltnet/newtonsoft-json/blob/main/.github/workflows/pipelines.yml
+- Extensions for Swashbuckle.AspNetCore API - https://github.com/codebeltnet/swashbuckle-aspnetcore/blob/main/.github/workflows/pipelines.yml
+- Extensions for xUnit API - https://github.com/codebeltnet/xunit/blob/main/.github/workflows/pipelines.yml
+- Extensions for YamlDotNet API - https://github.com/codebeltnet/yamldotnet/blob/main/.github/workflows/pipelines.yml
+- Shared Kernel API - https://github.com/codebeltnet/shared-kernel/blob/main/.github/workflows/pipelines.yml
+- Unitify API - https://github.com/codebeltnet/unitify/blob/main/.github/workflows/pipelines.yml
+
+### Intermediate CI/CD Pipeline
+
+- Savvy I/O - https://github.com/codebeltnet/savvyio/blob/main/.github/workflows/pipelines.yml
+
+### Advanced CI/CD Pipeline
+
+- Cuemon for .NET - https://github.com/gimlichael/Cuemon/blob/main/.github/workflows/pipelines.yml
 
 ## Contributing to Reusable Workflows for .NET CLI Pack
 
