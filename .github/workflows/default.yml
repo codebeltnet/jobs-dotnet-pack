@@ -89,7 +89,7 @@ jobs:
         uses: codebeltnet/dotnet-restore@v3
         with:
           projects: ${{ inputs.projects }}
-          level: ${{ inputs.verbosity-level }}
+          verbosity-level: ${{ inputs.verbosity-level }}
 
       - name: Pack for ${{ inputs.configuration }}
         uses: codebeltnet/dotnet-pack@v3
