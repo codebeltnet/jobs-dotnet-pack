@@ -59,6 +59,13 @@ jobs:
         with:
           includePreview: ${{ inputs.include-preview }}
 
+      - if: ${{ inputs.restore-cache-key == '' }}
+        name: Restore Dependencies
+        uses: codebeltnet/dotnet-restore@v2
+        with:
+          projects: ${{ inputs.projects }}
+          level: ${{ inputs.verbosity-level }}
+
       - if: inputs.restore-cache-key != ''
         name: Restore Cache
         uses: actions/cache/restore@v4
