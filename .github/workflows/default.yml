@@ -61,7 +61,7 @@ jobs:
 
       - if: inputs.restore-cache-key != ''
         name: Restore Cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             ${{ github.workspace }}
@@ -74,7 +74,7 @@ jobs:
           fail-on-cache-miss: true
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: ${{ inputs.download-build-artifact-pattern != '' && inputs.download-build-artifact-pattern || format('*-{0}', inputs.configuration) }}
           merge-multiple: true
@@ -100,7 +100,7 @@ jobs:
           
 
       - name: Upload NuGet Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.upload-packed-artifact-name != '' && inputs.upload-packed-artifact-name || format('NuGet-{0}', inputs.configuration) }}
           path: ${{ runner.temp }}/.nuget
