@@ -36,6 +36,8 @@ pack-call:
 
 ```yaml
 with:
+  # Optional checkout identity for Git/SourceLink metadata. Omit for artifact-only packing.
+  ref: ''
   # The version of your NuGet package, e.g., 1.0.0.
   version:
   # Optional path to the project(s) file to build. Supports globbing. Default is an empty string.
