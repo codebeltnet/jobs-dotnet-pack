@@ -3,6 +3,11 @@ name: .NET Pack
 on:
   workflow_call:
     inputs:
+      ref:
+        description: Optional branch, tag or SHA to check out for Git/package provenance metadata. The downloaded build artifact remains authoritative; omit to retain artifact-only packing.
+        required: false
+        type: string
+        default: ''
       version:
         description: The version of your NuGet package, e.g., 1.0.0.
         required: true
@@ -54,6 +59,12 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
+      - name: Checkout requested ref for package provenance
+        if: ${{ inputs.ref != '' }}
+        uses: codebeltnet/git-checkout@v1
+        with:
+          ref: ${{ inputs.ref }}
+
       - name: Install .NET
         uses: codebeltnet/install-dotnet@v3
         with:
